@@ -453,7 +453,7 @@ const TempDriverScreen = ({ navigation }) => {
       dutyhoursList[1]['status'] = false
       dutyhoursList[2]['status'] = false
     }
-    if (item.id = 2) {
+    if (item.id == 2) {
       dutyhoursList[0]['status'] = false
       dutyhoursList[2]['status'] = false
     }

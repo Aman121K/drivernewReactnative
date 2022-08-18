@@ -10,7 +10,7 @@ const HomeScreen =  ({navigation}) =>{
      <ScrollView >
             
          <TouchableOpacity style={styles.CardView}
-                            onPress={() => navigation.navigate("Temporary")}
+                            onPress={() => navigation.navigate("OnCallHomeScreen")}
 
          >
            <Image
@@ -20,7 +20,7 @@ const HomeScreen =  ({navigation}) =>{
 
          </TouchableOpacity>  
          <TouchableOpacity style={styles.CardView}
-                            onPress={() => navigation.navigate("Driver")}
+                            onPress={() => navigation.navigate("JobDetails")}
 
           >
               <Image

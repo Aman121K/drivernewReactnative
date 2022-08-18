@@ -12,6 +12,18 @@ import Driver from '../screen/Home/Driver';
 import Temporary from '../screen/Home/Temporary';
 import BottomTab from './bottomNavigation';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import OnCallDropDate from '../screen/Home/Temporary/OnCallHomeScreen/OnCallDropDate';
+import OnCallDropLocality from '../screen/Home/Temporary/OnCallHomeScreen/OnCallDropLocality';
+import OnCallLocalDat from '../screen/Home/Temporary/OnCallHomeScreen/OnCallLocalDat';
+import OnCallOutStationDate from '../screen/Home/Temporary/OnCallHomeScreen/OnCallOutStationDate';
+import OnCallPickUpAddress from '../screen/Home/Temporary/OnCallHomeScreen/OnCallPickUpAddress';
+import OnCallFinalStage from '../screen/Home/Temporary/OnCallHomeScreen/OnCallFinalStage';
+import OnCallHomeScreen from '../screen/Home/Temporary/OnCallHomeScreen';
+import AdditionalInformation from '../screen/Home/Driver/AdditionInformation';
+import JobDetails from '../screen/Home/Driver/JobDetails';
+import JobInterViewDetails from '../screen/Home/Driver/InterViewDetials';
+import Address from '../screen/Home/Driver/Address';
+import InterViewDetails from '../screen/Home/Driver/InterViewDetials';
 const Stack = createNativeStackNavigator();
 const StackNavigtaion = () => {
   return (
@@ -66,6 +78,48 @@ const StackNavigtaion = () => {
         component={BottomTab}
         options={{headerShown:false}}
       />
+      <Stack.Screen
+      name='OnCallHomeScreen'
+      component={OnCallHomeScreen}
+      options={{title:'Temporary Booking'}}/>
+      <Stack.Screen
+      name='OnCallDropDate'
+      component={OnCallDropDate}
+      options={{title:'Drop Booking'}}/>
+      <Stack.Screen
+      name='OnCallDropLocality'
+      component={OnCallDropLocality}
+      options={{title:'Drop Locality'}}/>
+
+      <Stack.Screen
+      name='OnCallFinalStage'
+      component={OnCallFinalStage}
+      options={{title:'Tempoaray Booking'}}/>
+
+      <Stack.Screen
+      name='OnCallLocalDat'
+      component={OnCallLocalDat}
+      options={{title:'Local Booking'}}/>
+      <Stack.Screen
+      name='OnCallOutStationDate'
+      component={OnCallOutStationDate}
+      options={{title:'Outstation Booking'}}/>
+      <Stack.Screen
+      name='OnCallPickUpAddress'
+      component={OnCallPickUpAddress}
+      options={{title:'Pickup address'}}/>
+      <Stack.Screen
+      name='JobDetails'
+      component={JobDetails}
+      options={{title:'Job details'}}/>
+      <Stack.Screen
+      name='Address'
+      component={Address}
+      options={{title:'Address'}}/>
+      <Stack.Screen name='AdditionalInformation'
+      component={AdditionalInformation} options={{title:'Additional Informtion'}}/>
+      <Stack.Screen name='InterviewDetails' component={InterViewDetails}
+      options={{title:'interView details'}}/>
     </Stack.Navigator>
   );
 };
