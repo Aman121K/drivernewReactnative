@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import moment from 'moment';
 import {
@@ -16,18 +16,18 @@ const styles = StyleSheet.create({
         // flexDirection: 'row',
         // justifyContent: 'space-evenly',    
     },
-    placeholderStyle:{
-        color:'black',
-        marginLeft:'5%'
+    placeholderStyle: {
+        color: 'black',
+        marginLeft: '5%'
     },
-    selectedTextStyle:{
-        color:'black'
+    selectedTextStyle: {
+        color: 'black'
     }
 })
-const OnCallDropLoacality=({navigation,route})=>{
-    const {OnacllDropLocality}=route.params;
-    console.log("OnacllDropLocality.../",OnacllDropLocality)
-    const [nightMode,setNightmode]=useState(false)
+const OnCallDropLoacality = ({ navigation, route }) => {
+    const { OnacllDropLocality } = route.params;
+    console.log("OnacllDropLocality.../", OnacllDropLocality)
+    const [nightMode, setNightmode] = useState(false)
     const [loading, setLoading] = useState(false);
     const [errortext, setErrortext] = useState('');
     const [logedInUserData, setUserData] = useState({});
@@ -83,10 +83,10 @@ const OnCallDropLoacality=({navigation,route})=>{
     const [address, setAddress] = useState('');
 
     const [allCityList, setallCityList] = useState([]);
-    const [city, setCity] = useState('');
+    const [city, setCity] = useState(OnacllDropLocality?.city);
     const [cityList, setCityList] = useState([]);
     const [showlocalityDropDown, setshowlocalityDropDown] = useState(false);
-    const [locality, setLocality] = useState('');
+    const [locality, setLocality] = useState(OnacllDropLocality?.locality);
     const [localityList, setLocalityList] = useState([]);
     const [toLocality, setTolocality] = useState();
 
@@ -151,7 +151,7 @@ const OnCallDropLoacality=({navigation,route})=>{
             var prevCarList = data.all_car.map(prvCar => ({ value: prvCar.id, label: prvCar.previous_address, }))
 
             setallCityList(data.city_list)
-            var cityList = data.city_list.map(city => ({ value: city.city_id, label: city.city_name }));
+            var cityList = data.city_list.map(city => ({ value: city.city_id, label: city.city_name, localityarray: city?.all_locality }));
             console.log('City list', cityList);
             setCityList(cityList)
 
@@ -226,71 +226,101 @@ const OnCallDropLoacality=({navigation,route})=>{
         console.log(new Date(returndate).getDate());
     }
 
-    const onCallFinalStage=()=>{
-        OnacllDropLocality['location']=drivertype;
-        OnacllDropLocality['locality']=locality;
-        navigation.navigate('OnCallFinalStage',{OnCallFinalStage:OnacllDropLocality})
+    const onCallFinalStage = () => {
+        OnacllDropLocality['location'] = drivertype;
+        OnacllDropLocality['drop_city'] = city
+        OnacllDropLocality['drop_locality'] = locality;
+        navigation.navigate('OnCallFinalStage', { OnCallFinalStage: OnacllDropLocality })
     }
     return (
         <Provider theme={nightMode ? DarkTheme : DefaultTheme}>
-        <ScrollView>
-        <View style={{ marginTop: '10%' }}>
-        <View style={{width:'90%',alignSelf:'center',marginTop:'5%' }}>
-                <TouchableOpacity style={{ flexDirection: 'row', margin: 10,  alignContent: 'center' }}
-                    onPress={() => setDriverTypeChecked('2')}
-                >
-                    <Ionicons name={drivertype === '2' ? 'radio-button-on' : 'radio-button-off-sharp'} size={20} color={'red'} />
-                    <Text style={{  color: 'black' ,marginLeft:10}}>Drop me in same location as picked up</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={{ flexDirection: 'row', margin: 10,  alignContent: 'center', }}
+            <ScrollView>
+                <View style={{ marginTop: '10%' }}>
+                    <View style={{ width: '90%', alignSelf: 'center', marginTop: '5%' }}>
+                        <TouchableOpacity style={{ flexDirection: 'row', margin: 10, alignContent: 'center' }}
+                            onPress={() => setDriverTypeChecked('2')}
+                        >
+                            <Ionicons name={drivertype === '2' ? 'radio-button-on' : 'radio-button-off-sharp'} size={20} color={'red'} />
+                            <Text style={{ color: 'black', marginLeft: 10 }}>Drop me in same location as picked up</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ flexDirection: 'row', margin: 10, alignContent: 'center', }}
 
-                    onPress={() => setDriverTypeChecked('1')}
-                >
-                    <Ionicons name={drivertype === '1' ? 'radio-button-on' : 'radio-button-off-sharp'} size={20} color={'red'} />
+                            onPress={() => setDriverTypeChecked('1')}
+                        >
+                            <Ionicons name={drivertype === '1' ? 'radio-button-on' : 'radio-button-off-sharp'} size={20} color={'red'} />
 
-                    <Text style={{  color: 'black',marginLeft:10}}>Drop me else where</Text>
+                            <Text style={{ color: 'black', marginLeft: 10 }}>Drop me else where</Text>
 
-                </TouchableOpacity>
+                        </TouchableOpacity>
 
-            </View>
-         
-         <View style={{width:'90%',alignSelf:'center',borderWidth:1,borderColor:'black',padding:5,borderRadius:10}}>
-            <Dropdown
-                style={styles.dropdown}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
-                data={localityList}
-                search
-                maxHeight={250}
-                labelField="label"
-                valueField="value"
-                placeholder="Select new Locality*"
-                searchPlaceholder="Search..."
-                value={locality}
-                onChange={item => {
-                  console.log("vikkkk", item);
-                  setLocality(item.value);
-                  setTolocality(item.value);
-
-                }}
-              />
-              </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '90%', alignSelf: 'center', marginTop: '10%' }}>
-                <TouchableOpacity  onPress={()=>navigation.goBack()} style={{ backgroundColor: 'green', padding: '3%', borderRadius: 5, width: '25%' }}>
-                    <View>
-                        <Text style={{ color: 'white' }}>Previous</Text>
                     </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>onCallFinalStage()} style={{ backgroundColor: 'green', padding: '3%', borderRadius: 5, width: '25%', alignItems: 'center' }}>
-                    <View>
-                        <Text style={{ color: 'white' }}>Next</Text>
+
+                    {drivertype === '1' ?
+                        <>
+                            <View style={{ borderWidth: 1, borderColor: 'black', width: '90%', alignSelf: 'center', marginTop: '5%', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }}>
+                                <Dropdown
+                                    style={styles.dropdown}
+                                    placeholderStyle={styles.placeholderStyle}
+                                    selectedTextStyle={styles.selectedTextStyle}
+                                    inputSearchStyle={styles.inputSearchStyle}
+                                    iconStyle={styles.iconStyle}
+                                    data={cityList}
+                                    search
+                                    maxHeight={150}
+                                    labelField="label"
+                                    valueField="value"
+                                    placeholder="City*"
+                                    searchPlaceholder="Search..."
+                                    value={city}
+                                    onChange={item => {
+                                        console.log("vikkkk", item);
+                                        var localList = item?.localityarray.map(local => ({ value: local.locality_id, label: local.locality_name }));
+                                        // console.log('localList', localList)
+                                        setLocalityList(localList)
+                                        setCity(item?.value)
+                                    }}
+                                />
+                            </View>
+                            <View style={{ width: '90%', alignSelf: 'center', marginTop: 20, borderWidth: 1, borderColor: 'black', padding: 5, borderRadius: 10 }}>
+                                <Dropdown
+                                    style={styles.dropdown}
+                                    placeholderStyle={styles.placeholderStyle}
+                                    selectedTextStyle={styles.selectedTextStyle}
+                                    inputSearchStyle={styles.inputSearchStyle}
+                                    iconStyle={styles.iconStyle}
+                                    data={localityList}
+                                    search
+                                    maxHeight={250}
+                                    labelField="label"
+                                    valueField="value"
+                                    placeholder="Select new Locality*"
+                                    searchPlaceholder="Search..."
+                                    value={locality}
+                                    onChange={item => {
+                                        console.log("vikkkk", item);
+                                        var localList = item?.localityarray.map(local => ({ value: local.locality_id, label: local.locality_name }));
+                                        // console.log('localList', localList)
+                                        setLocalityList(localList)
+                                        setTolocality(item.value);
+
+                                    }}
+                                />
+                            </View>
+                        </> : null}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '90%', alignSelf: 'center', marginTop: '10%' }}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={{ backgroundColor: 'green', padding: '3%', borderRadius: 5, width: '25%' }}>
+                            <View>
+                                <Text style={{ color: 'white' }}>Previous</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => onCallFinalStage()} style={{ backgroundColor: 'green', padding: '3%', borderRadius: 5, width: '25%', alignItems: 'center' }}>
+                            <View>
+                                <Text style={{ color: 'white' }}>Next</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
-                </TouchableOpacity>
-            </View>
-        </View>
-        </ScrollView>
+                </View>
+            </ScrollView>
         </Provider>
     )
 }

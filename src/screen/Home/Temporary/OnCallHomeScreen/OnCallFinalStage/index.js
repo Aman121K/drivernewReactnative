@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native';
 import moment, { defaultFormat } from 'moment';
 import {
-  TextInput,
   DarkTheme,
   DefaultTheme,
   Provider
@@ -21,7 +20,7 @@ const styles = StyleSheet.create({
 })
 const OnCallFinalStage = ({ navigation, route }) => {
   const { OnCallFinalStage } = route.params;
-  console.log("Final Stage params is...", OnCallFinalStage);
+  // console.log("Final Stage params is...", OnCallFinalStage);
   const [nightMode, setNightmode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
@@ -32,7 +31,7 @@ const OnCallFinalStage = ({ navigation, route }) => {
   const [isreturndate, setIsReturndate] = useState(false)
   const [saveAddressValue, setsaveAddressValue] = useState('0')
   const [open, setDateOpen] = useState(false)
- 
+
   const [showReportingDropDown, setshowReportingDropDown] = useState(false);
   const [reportingAddress, setReportingAddress] = useState('');
   const [reportingAdrList, setReportingAdrList] = useState([]);
@@ -65,6 +64,7 @@ const OnCallFinalStage = ({ navigation, route }) => {
   const [dutytype, setdutyType] = useState('');
   const [totalDays, setTotalDays] = useState('1');
   const [dutyhour, setDutyHour] = useState('');
+  const [price, setPrice] = useState('');
   const dutyTypeList = [
     {
       label: "Local",
@@ -86,6 +86,7 @@ const OnCallFinalStage = ({ navigation, route }) => {
   const [remarks, setremarks] = useState('');
   const [allAdress1, setAlladress1] = useState([])
   const [customerendering, setcustomerendering] = useState(false);
+  const [userId,setuserId]=useState();
   const handleRemarks = rmk => {
     setremarks(rmk);
   };
@@ -96,26 +97,27 @@ const OnCallFinalStage = ({ navigation, route }) => {
       console.log("!!!!! ----- User data  :-", userData);
       const data = JSON.parse(userData)
       setUserData(data)
-      console.log("!!!!! ----- User ID: ", logedInUserData.user_id);
+      console.log("!!!!! ----- User ID use id details: ", logedInUserData.user_id);
       getAllData(data.user_id)
+      setuserId(data.user_id);
 
 
     } catch (error) {
-      console.log("!!!!! ----- Something went wrong, while getting user token", error);
+      // console.log("!!!!! ----- Something went wrong, while getting user token", error);
     }
   }
 
   const getAllData = (userid) => {
     setErrortext('');
     setLoading(true)
-    console.log("!!!!! ----- User Aman ID: ", userid);
+    // console.log("!!!!! ----- User Aman ID: ", userid);
     const payload = { customerid: userid }
-    console.log('All DATA req', payload);
+    // console.log('All DATA req', payload);
 
     const onSuccess = ({ data }) => {
       // Set JSON Web Token on success
       setLoading(false);
-      console.log('All DATA', data);
+      // console.log('All DATA', data);
 
       var allTm = data.all_timeslot.map(tml => ({ value: tml, label: tml }));
       // console.log('Time list',allTm);
@@ -132,25 +134,19 @@ const OnCallFinalStage = ({ navigation, route }) => {
 
       setallCityList(data.city_list)
       var cityList = data.city_list.map(city => ({ value: city.city_id, label: city.city_name }));
-      console.log('City list', cityList);
+      // console.log('City list', cityList);
       setCityList(cityList)
 
       var cityList1 = data.locality_list.map(city => ({ value: city.locality_id, label: city.locality_name }));
-      console.log('City or locality both...', cityList1);
+      // console.log('City or locality both...', cityList1);
       setLocalityList(cityList1)
 
       var prevCarList = data.all_car.map(car => ({ value: car.car_id, label: car.car_name }));
-      //  if (prevCarList.length > 0) { 
       prevCarList.push({ value: 0, label: 'Select New Car' });
       setpreviousCarList(prevCarList)
-      // setIsShowPreviousCarList(false)
-      // }
-
-      console.log('Previous Car List', prevCarList);
 
 
       var carList = data.car_master.map(car => ({ value: car.id, label: car.car_name }));
-      console.log('Car List', carList);
       setCarList(carList)
     };
 
@@ -170,31 +166,40 @@ const OnCallFinalStage = ({ navigation, route }) => {
       .then(onSuccess)
       .catch(onFailure);
   };
-
+  const getPriceApi = async () => {
+    try {
+      const response = await fetch(`https://driversuvidha.in/CRM/api/Booking/pricing?duty_type=${OnCallFinalStage?.dutytype}&duty_hours=${OnCallFinalStage?.dutyhour}&city_id=${OnCallFinalStage?.city}`);
+      const json = await response.json();
+      setPrice(json?.price)
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    console.log('TempDriverScreen loaded')
     getToken()
+    // getPriceApi()
   }, [])
- 
+
   const handleSubmitPress = () => {
     setLoading(true)
-      OnCallFinalStage['customer_id'] = logedInUserData.user_id,
-      OnCallFinalStage['no_of_day'] = "1",
-      OnCallFinalStage['tocity'] = "",
-      OnCallFinalStage['status'] = "1",
-      OnCallFinalStage['drop_city'] = "2",
-      OnCallFinalStage['drop_locality'] = "5",
-      OnCallFinalStage['driverpreference'] =driverDetails,
+    console.log("user details is...",userId)
+      OnCallFinalStage['customer_id'] = logedInUserData.user_id || "",
+      OnCallFinalStage['no_of_day'] = OnCallFinalStage?.no_of_day || "1",
+      OnCallFinalStage['tocity'] = OnCallFinalStage?.tocity || "",
+      OnCallFinalStage['drop_city'] =OnCallFinalStage?.city || "",
+      OnCallFinalStage['drop_locality'] = OnCallFinalStage?.locality || "",
+      OnCallFinalStage['driverpreference'] = driverDetails,
       OnCallFinalStage['remark'] = remarks,
       OnCallFinalStage['reporting_address'] = "",
-      console.log("Test....", OnCallFinalStage);
+      OnCallFinalStage['price'] = price;
+    console.log("Test....", OnCallFinalStage);
     const onSuccess = ({ data }) => {
-      // Set JSON Web Token on success
       setLoading(false);
       console.log(data);
       setTimeout(() => {
-        // Alert.alert('Oops!', error.message);
         alert('Your Booking is Successfully Booked!');
       }, 100);
       navigation.navigate('BottomTab')
@@ -210,7 +215,6 @@ const OnCallFinalStage = ({ navigation, route }) => {
         alert('Success!');
       }, 100);
       navigation.navigate('BottomTab')
-      console.log("!!!!----Error", error);
     };
     APIKit.post('/Booking/oncall_book', OnCallFinalStage)
       .then(onSuccess)
@@ -239,12 +243,12 @@ const OnCallFinalStage = ({ navigation, route }) => {
             />
           </View>
           <View style={{ borderWidth: 1, borderColor: 'grren', padding: 15, marginTop: '6%', width: '90%', alignSelf: 'center', borderRadius: 10 }}>
-            <TextInput placeholder='Remarks' onChangeText={(e) => setremarks(e)}
+            <TextInput placeholder='Remarks' placeholderTextColor="black" style={{ color: 'black' }} onChangeText={(e) => setremarks(e)}
             ></TextInput>
 
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '90%', alignSelf: 'center', marginTop: '10%' }}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={{ backgroundColor: 'green', padding: '3%', borderRadius: 5, width: '35%',alignItems:'center' }}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ backgroundColor: 'green', padding: '3%', borderRadius: 5, width: '35%', alignItems: 'center' }}>
               <View>
                 <Text style={{ color: 'white' }}>Previous</Text>
               </View>

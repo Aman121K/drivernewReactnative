@@ -28,6 +28,7 @@ const OnCallLocalDat = ({ navigation }) => {
     const [isReportingdate, setIsReportingdate] = useState(false)
     const [returndate, setReturndate] = useState(new Date())
     const [isreturndate, setIsReturndate] = useState(false)
+    const [isShowPreviousCarList, setIsShowPreviousCarList] = useState(false);
     const [saveAddressValue, setsaveAddressValue] = useState('0')
     const [show5hours, setShowhours] = useState(false);
     const [show8hours, setShow8Hours] = useState(true);
@@ -97,6 +98,7 @@ const OnCallLocalDat = ({ navigation }) => {
     const [carList, setCarList] = useState([]);
     const [isSaveAddress, setisSaveAddress] = useState(false);
     const [drivertype, setDriverTypeChecked] = useState('4');
+    const [driverTypeCh, setDriverTypeCh] = useState('2');
 
     const [dutytype, setdutyType] = useState('');
     const [totalDays, setTotalDays] = useState('1');
@@ -151,13 +153,13 @@ const OnCallLocalDat = ({ navigation }) => {
             console.log('City or locality both...', cityList1);
             setLocalityList(cityList1)
 
-            var prevCarList = data.all_car.map(car => ({ value: car.car_id, label: car.car_name }));
+            var prevCarList = data.all_car.map(car => ({ value: car.car_id, label: car.car_name + ' ' + '(' + car?.car_type + ')' }));
             //  if (prevCarList.length > 0) { 
             prevCarList.push({ value: 0, label: 'Select New Car' });
             setpreviousCarList(prevCarList)
             // setIsShowPreviousCarList(false)
             console.log('Previous Car List', prevCarList);
-            var carList = data.car_master.map(car => ({ value: car.id, label: car.car_name }));
+            var carList = data.car_master.map(car => ({ value: car.id, label: car.car_name + ' ' + '(' + car?.car_type + ')' }));
             console.log('Car List', carList);
             setCarList(carList)
         };
@@ -228,24 +230,25 @@ const OnCallLocalDat = ({ navigation }) => {
             reportingtime: reportingTime,
             returndate: dutytype === 'Local' ? "" : moment(returndate).format('YYYY-MM-DD'),
             dutyhour: drivertype,
-            drivertype: '1',
+            drivertype: driverTypeCh,
             dutytype: 1,
             cardetails: cardetails?.value || "",
         }
-        // Utility.setInLocalStorge('onCallLocalDate',body);
         navigation.navigate('OnCallPickUpAddress', { OnCallPickUpAddress: body })
     }
     const newTimeIs = (item) => {
-        console.log("time is ....", item)
+        const abcTime = item.split(":")
+        console.log(parseInt(abcTime[0]));
+        if (parseInt(abcTime[0]) < 18) {
+            setShow8Hours(true)
+            setShowhours(false);
+        }
+        else {
+            setShow8Hours(false)
+            setDriverTypeChecked('5')
+            setShowhours(true);
+        }
         setreportingTime(item);
-        // if (item > 18) {
-        //     setShow8Hours(true);
-        //     setShowhours(false);
-        // } else {
-        //     setShow8Hours(false);
-        //     setShowhours(true);
-        //     setDriverTypeChecked('5');
-        // }
     }
     return (
         <Provider theme={nightMode ? DarkTheme : DefaultTheme}>
@@ -265,7 +268,7 @@ const OnCallLocalDat = ({ navigation }) => {
                             maxLength={10}
                             keyboardType='default'
                             onTouchStart={() => openLocalDatePkr()}
-                            right={<TextInput.Icon name="calendar" />}
+                            // right={<TextInput.Icon name="calendar" />}
                         />
                         <View style={styles.SectionStyleBottom}>
                             <TextInput
@@ -280,7 +283,7 @@ const OnCallLocalDat = ({ navigation }) => {
                                 maxLength={10}
                                 keyboardType='default'
                                 onTouchStart={() => openRtnDatePkr()}
-                                right={<TextInput.Icon name="calendar" />}
+                                // right={<TextInput.Icon name="calendar" />}
                             />
                         </View>
                     </View>
@@ -326,7 +329,7 @@ const OnCallLocalDat = ({ navigation }) => {
 
                                 onPress={() => setDriverTypeChecked('5')}
                             >
-                                <Ionicons name={drivertype === '8' ? 'radio-button-on' : 'radio-button-off-sharp'} size={20} color={'red'} />
+                                <Ionicons name={drivertype === '5' ? 'radio-button-on' : 'radio-button-off-sharp'} size={20} color={'red'} />
 
                                 <Text style={{ marginLeft: 10, color: 'black' }}>5 Hours</Text>
 
@@ -341,9 +344,9 @@ const OnCallLocalDat = ({ navigation }) => {
                             style={styles.dropdown}
                             placeholderStyle={{ color: 'black' }}
                             selectedTextStyle={{ color: 'black' }}
-                            inputSearchStyle={{ color: 'black' }}
+                            inputSearchStyle={styles.inputSearchStyle}
                             iconStyle={styles.iconStyle}
-                            data={carList}
+                            data={previousCarList}
                             maxHeight={200}
                             search
                             labelField="label"
@@ -354,47 +357,100 @@ const OnCallLocalDat = ({ navigation }) => {
                             onChange={item => {
                                 setCar(item);
                                 console.log("vikkkk", item.label);
-                                //   if (item.label == 'Select New Car') {
-                                //     setIsShowPreviousCarList(!isShowPreviousCarList)
-                                //   }
-                                //   else {
-                                //     setIsShowPreviousCarList(false)
-                                //   }
+                                if (item.label == 'Select New Car') {
+                                    setIsShowPreviousCarList(!isShowPreviousCarList)
+                                }
+                                else {
+                                    setIsShowPreviousCarList(false)
+                                }
                             }}
                         />
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '90%', alignSelf: 'center', marginTop: '10%' }}>
-                        <TouchableOpacity onPress={() => navigation.goBack()} style={{ backgroundColor: 'green', padding: '3%', borderRadius: 5, width: '25%' }}>
-                            <View>
-                                <Text style={{ color: 'white' }}>Previous</Text>
+
+
+                    {
+                        isShowPreviousCarList === true ?
+                            <View style={{ width: '90%', alignSelf: 'center', borderWidth: 1, padding: 10, borderRadius: 5, marginTop: 20 }} >
+                                <Dropdown
+                                    style={styles.dropdown}
+                                    placeholderStyle={{ color: 'black' }}
+                                    selectedTextStyle={{ color: 'black' }}
+                                    inputSearchStyle={styles.inputSearchStyle}
+                                    iconStyle={styles.iconStyle}
+                                    data={carList}
+                                    search
+                                    maxHeight={250}
+                                    labelField="label"
+                                    valueField="value"
+                                    placeholder="Select New  Car"
+                                    searchPlaceholder="Search..."
+                                    // value={cardetails.label}
+                                    onChange={item => {
+                                        setCar(item);
+                                        console.log("vikk", item);
+                                    }}
+                                />
                             </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => goToOnPickUpAddress()} style={{ backgroundColor: 'green', padding: '3%', borderRadius: 5, width: '25%', alignItems: 'center' }}>
-                            <View>
-                                <Text style={{ color: 'white' }}>Next</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <DatePicker
-                        modal
-                        minDate={new Date()}
-                        minimumDate={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
-                        mode={isReportingdate || isreturndate ? "date" : "time"}
-                        open={open}
-                        date={reportingdate}
-                        onConfirm={(date) => {
-                            setDateOpen(false)
-                            console.log("Return date choose may...", date)
-                            setDate(date)
 
-
-
-                        }}
-                        onCancel={() => {
-                            setDateOpen(false)
-                        }}
-                    />
+                            : null}
                 </View>
+                <View style={{ marginTop: 10 }}>
+                    <Text style={{ marginLeft: 20, fontWeight: 'bold', color: 'black' }}>Driver Type</Text>
+
+                    <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+                        <TouchableOpacity style={{ flexDirection: 'row', margin: 10, justifyContent: 'space-between', alignContent: 'center' }}
+
+                            onPress={() => setDriverTypeCh('2')}
+
+                        >
+
+                            <Ionicons name={driverTypeCh === '2' ? 'radio-button-on' : 'radio-button-off-sharp'} size={20} color={'red'} />
+                            <Text style={{ marginLeft: 10, color: 'black' }}>Regular</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ flexDirection: 'row', margin: 10, justifyContent: 'space-between', alignContent: 'center', }}
+
+                            onPress={() => setDriverTypeCh('1')}
+                        >
+                            <Ionicons name={driverTypeCh === '1' ? 'radio-button-on' : 'radio-button-off-sharp'} size={20} color={'red'} />
+
+                            <Text style={{ marginLeft: 10, color: 'black' }}>Chauffer</Text>
+
+                        </TouchableOpacity>
+
+                    </View>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '90%', alignSelf: 'center', marginTop: '10%' }}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ backgroundColor: 'green', padding: '3%', borderRadius: 5, width: '25%' }}>
+                        <View>
+                            <Text style={{ color: 'white' }}>Previous</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => goToOnPickUpAddress()} style={{ backgroundColor: 'green', padding: '3%', borderRadius: 5, width: '25%', alignItems: 'center' }}>
+                        <View>
+                            <Text style={{ color: 'white' }}>Next</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                <DatePicker
+                    modal
+                    minDate={new Date()}
+                    minimumDate={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
+                    mode={isReportingdate || isreturndate ? "date" : "time"}
+                    open={open}
+                    date={reportingdate}
+                    onConfirm={(date) => {
+                        setDateOpen(false)
+                        console.log("Return date choose may...", date)
+                        setDate(date)
+
+
+
+                    }}
+                    onCancel={() => {
+                        setDateOpen(false)
+                    }}
+                />
+
             </ScrollView>
         </Provider>
     )

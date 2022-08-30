@@ -184,6 +184,7 @@ const OnCallPickUpAddress = ({ navigation, route }) => {
   const [open, setDateOpen] = useState(false)
   const [ischeckDate, setischeckDate] = useState(false);
   const [chooseAddress, setChooseAddress] = useState('');
+  const [addressLevel,setAddressLevel]=useState();
   const openLocalDatePkr = () => {
     setIsReportingdate(true)
     setIsReturndate(false)
@@ -301,6 +302,7 @@ const OnCallPickUpAddress = ({ navigation, route }) => {
   const [showDutyTypeDropDown, setshowDutyTypeDropDown] = useState(false);
   const [dutytype, setdutyType] = useState('');
   const [totalDays, setTotalDays] = useState('1');
+  const [saveAddress,setSaveAddress]=useState('1');
 
   const [dutyhour, setDutyHour] = useState('');
   const dutyTypeList = [
@@ -373,10 +375,11 @@ const OnCallPickUpAddress = ({ navigation, route }) => {
 
       var prevAdrList = data.all_address.map(adrs => ({ value: adrs.id, label: adrs.previous_address, address: adrs.address, city: adrs.city, landmark: adrs.landmark, locality: adrs.locality, zip: adrs.zip }));
       setReportingAdrList(prevAdrList)
+      console.log("previous address iisss...",prevAdrList)
       var prevCarList = data.all_car.map(prvCar => ({ value: prvCar.id, label: prvCar.previous_address, }))
 
       setallCityList(data.city_list)
-      var cityList = data.city_list.map(city => ({ value: city.city_id, label: city.city_name }));
+      var cityList = data.city_list.map(city => ({ value: city.city_id, label: city.city_name, localityarray: city?.all_locality }));
       console.log('City list', cityList);
       setCityList(cityList)
 
@@ -467,10 +470,11 @@ const OnCallPickUpAddress = ({ navigation, route }) => {
     OnCallPickUpAddress['locality'] = locality;
     OnCallPickUpAddress['pincode'] = pincode;
     OnCallPickUpAddress['landmark'] = landmark;
-    if(OnCallPickUpAddress?.dutytype===1){
-    navigation.navigate('OnCallDropLocality', { OnacllDropLocality: OnCallPickUpAddress })
-    }else{
-      navigation.navigate('OnCallFinalStage',{OnCallFinalStage:OnCallPickUpAddress})
+    OnCallPickUpAddress['status']=saveAddress;
+    if (OnCallPickUpAddress?.dutytype === 1) {
+      navigation.navigate('OnCallDropLocality', { OnacllDropLocality: OnCallPickUpAddress })
+    } else {
+      navigation.navigate('OnCallFinalStage', { OnCallFinalStage: OnCallPickUpAddress })
     }
   }
   return (
@@ -501,14 +505,14 @@ const OnCallPickUpAddress = ({ navigation, route }) => {
                 setReportingAddress(item.value)
                 console.log("vikkkk", item);
                 setCity(item.city)
-                setisSaveAddress(true)
-                setsaveAddressValue('1');
+                setSaveAddress("0");
                 setAddress(item?.address);
                 setPincode(item?.zip);
                 setLocality(item?.locality);
                 setLandmark(item?.landmark);
                 setToCity(item?.city);
                 setTolocality(item?.locality)
+                setAddressLevel(item?.level)
               }}
             />
           </View>
@@ -517,7 +521,7 @@ const OnCallPickUpAddress = ({ navigation, route }) => {
               <Text style={{ color: 'black' }}>Select New Address</Text>
             </View>
             <View style={{ padding: 15, marginTop: '6%', width: '90%', alignSelf: 'center', borderRadius: 10 }}>
-              <Text style={{ color: 'black' }}>{address?.length>1?'Full Address:-':null}{address} {''}{pincode}{''}{landmark}</Text>
+              <Text style={{ color: 'black' }}>{address}{' '}{addressLevel}{' '}{locality}{' '}{landmark}{' '}{pincode}</Text>
             </View>
           </TouchableOpacity>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '90%', alignSelf: 'center', marginTop: '10%' }}>
@@ -569,15 +573,11 @@ const OnCallPickUpAddress = ({ navigation, route }) => {
                     searchPlaceholder="Search..."
                     value={city}
                     onChange={item => {
-                      // setGender(item.value);
-                      // setReportingAddress(item.value)
-                      console.log("vikkkk", item);
+                      console.log("vikkkk bhai item", item);
                       setCity(item?.value || "")
-                      // setisSaveAddress(true)
-                      // setAddress(item.address);
-                      // setPincode(item.zip);
-                      // setLocality(item.locality);
-                      // setLandmark(item.landmark);
+                      var localList = item?.localityarray.map(local => ({ value: local.locality_id, label: local.locality_name }));
+                      setLocalityList(localList)
+
                     }}
                   />
                   <View style={styles.spacerStyle} />

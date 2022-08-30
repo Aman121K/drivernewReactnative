@@ -503,6 +503,25 @@ const JobDetails = ({ navigation }) => {
               }}
             />
           </View>
+        
+          {isShowPreviousCarList == true ?
+          <View style={{marginTop:10}}>
+                <DropDown
+                  label={"Choose a Car"}
+                  mode={"outlined"}
+                  visible={showAllCarDropDown}
+                  showDropDown={() => setshowAllCarDropDown(true)}
+                  onDismiss={() => setshowAllCarDropDown(false)}
+                  value={car}
+                  setValue={setCar}
+                  list={carList}
+                  dropDownStyle={{ marginTop: 0.1 }}
+                  dropDownItemTextStyle={{color:'black'}}
+                  activeColor={'red'}
+                  theme={{ colors: { primary: '#99e8e4',underlineColor:'yellow', accent:'#99e8e4'}}}
+                />
+                </View>
+                 : null}
           <View style={{ flexDirection: 'row' }}>
 
             <TouchableOpacity style={{ flexDirection: 'row', margin: 10, justifyContent: 'space-between', alignContent: 'center', }}

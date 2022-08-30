@@ -286,7 +286,7 @@ const InterViewDetails = ({navigation,route}) => {
                     maxLength={10}
                     keyboardType='default'
                     onTouchStart={() => openLocalDatePkr()}
-                    right={<TextInput.Icon name="calendar" />}
+                    // right={<TextInput.Icon name="calendar" />}/
                 />
 
             </View>

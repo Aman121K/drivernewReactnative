@@ -196,7 +196,6 @@ const Address = ({ navigation, route }) => {
     const [showCarDrpDwn, setShowCarDrpDwn] = useState(false);
     const [car, setCar] = useState('');
     const [previousCarList, setpreviousCarList] = useState([]);
-
     const [showAllCarDropDown, setshowAllCarDropDown] = useState(false);
     const [allCarList, setallCarList] = useState([]);
     const [isShowPreviousCarList, setIsShowPreviousCarList] = useState(false);
@@ -284,7 +283,7 @@ const Address = ({ navigation, route }) => {
             console.log('City or locality both...', cityList1);
             setLocalityList(cityList1)
             setallCityList(data.city_list)
-            var cityList = data.city_list.map(city => ({ value: city.city_id, label: city.city_name }));
+            var cityList = data.city_list.map(city => ({ value: city.city_id, label: city.city_name, localityarray: city?.all_locality }));
             // console.log('City list', cityList);
             setCityList(cityList)
 
@@ -419,18 +418,13 @@ const Address = ({ navigation, route }) => {
               value={reportingAddress}
               onChange={item => {
                 console.log("login")
-                // setGender(item.value);
                 setReportingAddress(item.value)
                 console.log("vikkkk", item);
                 setCity(item.city)
-                // setisSaveAddress(true)
-                // setsaveAddressValue('1');
                 setAddress(item?.address);
                 setPincode(item?.zip);
                 setLocality(item?.locality);
                 setLandmark(item?.landmark);
-                // setToCity(item?.city);
-                // setTolocality(item?.locality)
               }}
             />
           </View>
@@ -512,9 +506,10 @@ const Address = ({ navigation, route }) => {
                                         searchPlaceholder="Search..."
                                         value={city}
                                         onChange={item => {
-
                                             console.log("vikkkk", item);
                                             setCity(item.value)
+                                            var localList = item?.localityarray.map(local => ({ value: local.locality_id, label: local.locality_name }));
+                                            setLocalityList(localList)
                                         }}
                                     />
                                     <View style={styles.spacerStyle} />

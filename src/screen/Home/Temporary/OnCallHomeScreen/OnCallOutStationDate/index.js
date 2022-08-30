@@ -32,6 +32,7 @@ const OnCallOutStationDate = ({ navigation }) => {
   const [reportingdate, setReportingdate] = useState(new Date())
   const [isReportingdate, setIsReportingdate] = useState(false)
   const [returndate, setReturndate] = useState(new Date())
+  const [driverTypeCh, setDriverTypeCh] = useState('2');
   const [isreturndate, setIsReturndate] = useState(false)
   const [saveAddressValue, setsaveAddressValue] = useState('0')
   const [open, setDateOpen] = useState(false)
@@ -60,14 +61,17 @@ const OnCallOutStationDate = ({ navigation }) => {
       if (totalDays < 1) {
         let newDate = parseInt(daysTill30June2035) + parseInt(2)
         console.log("new .....vip", newDate);
-        setTotalDays(JSON.stringify(newDate))
+        setTotalDays(totalDays + newDate)
         setReturndate(date)
         // setischeckDate(true);
         chekDate()
       } else {
         let newDate = parseInt(daysTill30June2035) + parseInt(1)
         console.log("new .....vip", newDate);
-        setTotalDays(JSON.stringify(newDate))
+        setTotalDays(totalDays + newDate
+
+
+        )
         setReturndate(date)
         // setischeckDate(true);
         chekDate()
@@ -80,9 +84,7 @@ const OnCallOutStationDate = ({ navigation }) => {
   const [reportingAddress, setReportingAddress] = useState('');
   const [reportingAdrList, setReportingAdrList] = useState([]);
   const handleReportingAddressChange = (item) => {
-    console.log("vikas", item);
-    console.log('! Aman Reporting address :-', reportingAddress)
-    console.log("All address by aman..", allAdress1);
+
     if (reportingAddress) {
       setCity(allAdress1[0].city);
       setAddress(allAdress1[0].address);
@@ -129,7 +131,6 @@ const OnCallOutStationDate = ({ navigation }) => {
   const handleLandmarkChange = lnd => {
     setLandmark(lnd);
   };
-
   //TIME
   const [showTimeDropDown, setshowTimeDropDown] = useState(false);
   const [reportingTime, setreportingTime] = useState('');
@@ -155,7 +156,7 @@ const OnCallOutStationDate = ({ navigation }) => {
 
   const [showDutyTypeDropDown, setshowDutyTypeDropDown] = useState(false);
   const [dutytype, setdutyType] = useState('');
-  const [totalDays, setTotalDays] = useState('Total Number of Days');
+  const [totalDays, setTotalDays] = useState(1);
 
   const [dutyhour, setDutyHour] = useState('');
   const dutyTypeList = [
@@ -239,7 +240,7 @@ const OnCallOutStationDate = ({ navigation }) => {
       console.log('City or locality both...', cityList1);
       setLocalityList(cityList1)
 
-      var prevCarList = data.all_car.map(car => ({ value: car.car_id, label: car.car_name }));
+      var prevCarList = data.all_car.map(car => ({ value: car.car_id, label: car.car_name + ' ' + '(' + car?.car_type + ')' }));
       //  if (prevCarList.length > 0) { 
       prevCarList.push({ value: 0, label: 'Select New Car' });
       setpreviousCarList(prevCarList)
@@ -249,7 +250,7 @@ const OnCallOutStationDate = ({ navigation }) => {
       console.log('Previous Car List', prevCarList);
 
 
-      var carList = data.car_master.map(car => ({ value: car.id, label: car.car_name }));
+      var carList = data.car_master.map(car => ({ value: car.id, label: car.car_name + ' ' + '(' + car?.car_type + ')' }));
       console.log('Car List', carList);
       setCarList(carList)
     };
@@ -305,34 +306,27 @@ const OnCallOutStationDate = ({ navigation }) => {
     setsaveAddressValue('1');
   }
 
-  // if(ischeckDate){
   const chekDate = () => {
-    // new Date().getDate()
     console.log(" return date is", returndate)
     console.log(new Date(returndate).getDate());
-    // var msDiff = new Date(returndate).getTime() - new Date(reportingdate).getTime();    //Future date - current date
-    // var daysTill30June2035 = Math.floor(msDiff / (1000 * 60 * 60 * 24));
-    // console.log("Days is...",daysTill30June2035);
-    // setTotalDays(JSON.stringify(daysTill30June2035))
-    // }
   }
   const onCallPickupAddress1 = () => {
-    if(!cardetails && !reportingTime){
+    if (!cardetails && !reportingTime) {
       alert("All filed is required")
       return
-  }
+    }
     const body = {
       reportingdate: moment(reportingdate).format('YYYY-MM-DD'),
       reportingtime: reportingTime,
       returndate: dutytype === 'Local' ? "" : moment(returndate).format('YYYY-MM-DD'),
       dutyhour: drivertype,
-      drivertype: '1',
+      drivertype: driverTypeCh,
       dutytype: 2,
-      no_of_day: "1",
-      city:city,
-      cardetails:cardetails?.value || "",
+      no_of_day: totalDays,
+      tocity: city,
+      cardetails: cardetails?.value || "",
     }
-    navigation.navigate('OnCallPickUpAddress',{OnCallPickUpAddress:body})
+    navigation.navigate('OnCallPickUpAddress', { OnCallPickUpAddress: body })
   }
   return (
     <Provider theme={nightMode ? DarkTheme : DefaultTheme}>
@@ -351,7 +345,11 @@ const OnCallOutStationDate = ({ navigation }) => {
               maxLength={10}
               keyboardType='default'
               onTouchStart={() => openLocalDatePkr()}
-              right={<TextInput.Icon name="calendar" />}
+              right={
+                <TouchableOpacity onPress={() => openLocalDatePkr()}>
+                  <TextInput.Icon name="calendar" />
+                </TouchableOpacity>
+              }
             />
             <View style={styles.SectionStyleBottom}>
               <TextInput
@@ -366,13 +364,13 @@ const OnCallOutStationDate = ({ navigation }) => {
                 maxLength={10}
                 keyboardType='default'
                 onTouchStart={() => openRtnDatePkr()}
-                right={<TextInput.Icon name="calendar" />}
+              // right={<TextInput.Icon name="calendar" />}
               />
             </View>
           </View>
-        
+
           <View style={{ width: '90%', alignSelf: 'center', marginTop: '5%', borderWidth: 1, borderRadius: 5, borderColor: 'black', padding: 15 }}>
-            <Text style={{ color: 'black' }}>{totalDays}</Text>
+            <Text style={{ color: 'black' }}> {totalDays}</Text>
           </View>
           <View style={{ width: '90%', alignSelf: 'center', marginTop: '5%' }}>
             <DropDown
@@ -411,33 +409,85 @@ const OnCallOutStationDate = ({ navigation }) => {
               }}
             />
           </View>
-          <View style={{width:'90%',alignSelf:'center',borderWidth:1,padding:10,borderRadius:5,marginTop:15}}>
-                    <Dropdown
-                style={styles.dropdown}
-                placeholderStyle={{color:'black'}}
-                selectedTextStyle={styles.selectedTextStyle}
-                inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
-                data={carList}
-                maxHeight={200}
-                search
-                labelField="label"
-                valueField="value"
-                placeholder="Select a Car *"
-                searchPlaceholder="Search..."
-                // value={previousCarList}
-                onChange={item => {
-                  setCar(item);
-                  console.log("vikkkk", item.label);
-                //   if (item.label == 'Select New Car') {
-                //     setIsShowPreviousCarList(!isShowPreviousCarList)
-                //   }
-                //   else {
-                //     setIsShowPreviousCarList(false)
-                //   }
-                }}
-              />
+          <View style={{ width: '90%', alignSelf: 'center', borderWidth: 1, padding: 10, borderRadius: 5, marginTop: 20 }}>
+            <Dropdown
+              style={styles.dropdown}
+              placeholderStyle={{ color: 'black' }}
+              selectedTextStyle={{ color: 'black' }}
+              inputSearchStyle={styles.inputSearchStyle}
+              iconStyle={styles.iconStyle}
+              data={previousCarList}
+              maxHeight={200}
+              search
+              labelField="label"
+              valueField="value"
+              placeholder="Select a Car *"
+              searchPlaceholder="Search..."
+              // value={previousCarList}
+              onChange={item => {
+                setCar(item);
+                console.log("vikkkk", item.label);
+                if (item.label == 'Select New Car') {
+                  setIsShowPreviousCarList(!isShowPreviousCarList)
+                }
+                else {
+                  setIsShowPreviousCarList(false)
+                }
+              }}
+            />
+          </View>
+
+
+          {
+            isShowPreviousCarList === true ?
+              <View style={{ width: '90%', alignSelf: 'center', borderWidth: 1, padding: 10, borderRadius: 5, marginTop: 20 }} >
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={{ color: 'black' }}
+                  selectedTextStyle={{ color: 'black' }}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={carList}
+                  search
+                  maxHeight={250}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Select New  Car"
+                  searchPlaceholder="Search..."
+                  // value={cardetails.label}
+                  onChange={item => {
+                    setCar(item);
+                    console.log("vikk", item);
+                  }}
+                />
               </View>
+
+              : null}
+          <View style={{ marginTop: 10 }}>
+            <Text style={{ marginLeft: 20, fontWeight: 'bold', color: 'black' }}>Driver Type</Text>
+
+            <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+              <TouchableOpacity style={{ flexDirection: 'row', margin: 10, justifyContent: 'space-between', alignContent: 'center' }}
+
+                onPress={() => setDriverTypeCh('2')}
+
+              >
+
+                <Ionicons name={driverTypeCh === '2' ? 'radio-button-on' : 'radio-button-off-sharp'} size={20} color={'red'} />
+                <Text style={{ marginLeft: 10, color: 'black' }}>Regular</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ flexDirection: 'row', margin: 10, justifyContent: 'space-between', alignContent: 'center', }}
+
+                onPress={() => setDriverTypeCh('1')}
+              >
+                <Ionicons name={driverTypeCh === '1' ? 'radio-button-on' : 'radio-button-off-sharp'} size={20} color={'red'} />
+
+                <Text style={{ marginLeft: 10, color: 'black' }}>Chauffer</Text>
+
+              </TouchableOpacity>
+
+            </View>
+          </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '90%', alignSelf: 'center', marginTop: '10%' }}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={{ backgroundColor: 'green', padding: '3%', borderRadius: 5, width: '25%' }}>
               <View>
@@ -470,7 +520,7 @@ const OnCallOutStationDate = ({ navigation }) => {
           />
         </View>
       </ScrollView>
-    </Provider>
+    </Provider >
   )
 }
 export default OnCallOutStationDate;

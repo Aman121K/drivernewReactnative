@@ -410,8 +410,12 @@ const AdditionalInformation = ({navigation,route}) => {
       abc.splice(finindex,1);
     }
     else{
-      abc.push(id)
+      abc.push('3')
     }
+    setlanguagedemo(abc);
+    setLanguage('3')
+    setLanguageHindi('3')
+    setLanguage2(!language2);
   }
   const onSearch = (text) => {
     console.log(text)

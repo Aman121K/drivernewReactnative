@@ -124,6 +124,9 @@ setLoading(false);
     //     console.error(error);
     //   });
   };
+  const changePassword=()=>{
+    navigation.navigate('changePassword',{otpData:loginuserData})
+  }
   const UserLogout=()=>{
     // Alert.alert("Go back")
     AsyncStorage.setItem('userData','');
@@ -197,6 +200,13 @@ setLoading(false);
                   activeOpacity={0.5}
                   onPress={()=>handleSubmitPress()}>
                   <Text style={styles.buttonTextStyle}>Update Profile</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.buttonStyle}
+                  activeOpacity={0.5}
+                  onPress={()=>changePassword()}>
+                  <Text style={styles.buttonTextStyle}>Change password</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.buttonStyle1}

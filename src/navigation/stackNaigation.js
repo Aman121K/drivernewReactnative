@@ -24,6 +24,8 @@ import JobDetails from '../screen/Home/Driver/JobDetails';
 import JobInterViewDetails from '../screen/Home/Driver/InterViewDetials';
 import Address from '../screen/Home/Driver/Address';
 import InterViewDetails from '../screen/Home/Driver/InterViewDetials';
+import OtpScreen from '../screen/Auth/OtpScreen';
+import ChangePassword from '../screen/Auth/ChangePassword';
 const Stack = createNativeStackNavigator();
 const StackNavigtaion = () => {
   return (
@@ -119,7 +121,11 @@ const StackNavigtaion = () => {
       <Stack.Screen name='AdditionalInformation'
       component={AdditionalInformation} options={{title:'Additional Informtion'}}/>
       <Stack.Screen name='InterviewDetails' component={InterViewDetails}
-      options={{title:'interView details'}}/>
+      options={{title:'Interview Details'}}/>
+       <Stack.Screen name='OtpScreen' component={OtpScreen}
+      options={{title:'OTP Verification'}}/>
+       <Stack.Screen name='changePassword' component={ChangePassword}
+      options={{title:'Enter New Password'}}/>
     </Stack.Navigator>
   );
 };

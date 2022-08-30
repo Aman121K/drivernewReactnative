@@ -1,7 +1,7 @@
 
 
 // Import React and Component
-import React, {useState, createRef} from 'react';
+import React, { useState, createRef } from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -14,126 +14,112 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Dimensions,
+  Alert
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
+
+import APIKit, { setClientToken } from '../../../shared/APIKit';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Loader from '../../../component/Loader';
 
-const ForgotPassword = ({navigation}) => {
-  const [userEmail, setUserEmail] = useState('');
-  const [userPassword, setUserPassword] = useState('');
+const ForgotPassword = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
-  const {width, height} = Dimensions.get("screen")
+  const [mobile, setMobile] = React.useState();
+  const { width, height } = Dimensions.get("screen")
   const passwordInputRef = createRef();
 
   const handleSubmitPress = () => {
     setErrortext('');
-    if (!userEmail) {
-      alert('Please fill Email');
+    if (!mobile) {
+      alert('Please fill Mobile');
       return;
     }
-    if (!userPassword) {
-      alert('Please fill Password');
-      return;
-    }
-    setLoading(true);
-    let dataToSend = {email: userEmail, password: userPassword};
-    let formBody = [];
-    for (let key in dataToSend) {
-      let encodedKey = encodeURIComponent(key);
-      let encodedValue = encodeURIComponent(dataToSend[key]);
-      formBody.push(encodedKey + '=' + encodedValue);
-    }
-    formBody = formBody.join('&');
-
-    fetch('http://localhost:3000/api/user/login', {
-      method: 'POST',
-      body: formBody,
-      headers: {
-        //Header Defination
-        'Content-Type':
-        'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        //Hide Loader
-        setLoading(false);
-        console.log(responseJson);
-        // If server response message same as Data Matched
-        if (responseJson.status === 'success') {
-          AsyncStorage.setItem('user_id', responseJson.data.email);
-          console.log(responseJson.data.email);
-          navigation.replace('DrawerNavigationRoutes');
-        } else {
-          setErrortext(responseJson.msg);
-          console.log('Please check your email id or password');
-        }
-      })
-      .catch((error) => {
-        //Hide Loader
-        setLoading(false);
-        console.error(error);
-      });
+    const payload = { mobile };
+    console.log(payload);
+    const onSuccess = ({ data }) => {
+      setLoading(false);
+      console.log("data is..", data);
+      if (data.status === "success") {
+        navigation.navigate('OtpScreen', { forgotPassword: data })
+      } else {
+        setTimeout(() => {
+          // Alert.alert('Alert!', data.message);
+          navigation.navigate('OtpScreen', { forgotPassword: data })
+        }, 100);
+      }
+    };
+    const onFailure = error => {
+      setLoading(false);
+      console.log('!!!!----Error', error);
+      console.log('!!!!----Error Response', error.response);
+      console.log('!!!!----error.response.data', error.response.data);
+      console.log('!!!!----error.response.status', error.response.status);
+      console.log('!!!!----headers', error.response.headers);
+      setTimeout(() => {
+        Alert.alert('Oops!', 'User id or password incorrect');
+      }, 100);
+    };
+    APIKit.post('/profile/forget_password', payload).then(onSuccess).catch(onFailure);
   };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.mainBody}>
-      <Loader loading={loading} />
+        <Loader loading={loading} />
 
-      <View style={{ width: '100%', height:height / 4, backgroundColor:'black'}}>
-        <ImageBackground source={require('../../../../Image/login-bg.png')} resizeMode="cover" style={styles.TopImage}>
-                  <Image
-                      source={require('../../../../Image/logo.png')}
-                    style={styles.Logo}
-                  />
-         </ImageBackground>
-      </View>
-      <View style={styles.ContentView}>
+        <View style={{ width: '100%', height: height / 4, backgroundColor: 'black' }}>
+          <ImageBackground source={require('../../../../Image/login-bg.png')} resizeMode="cover" style={styles.TopImage}>
+            <Image
+              source={require('../../../../Image/logo.png')}
+              style={styles.Logo}
+            />
+          </ImageBackground>
+        </View>
+        <View style={styles.ContentView}>
           <ScrollView
             // keyboardShouldPersistTaps="handled"
             contentContainerStyle={{
               // flex: 1,
-              
+
               //justifyContent: 'center',
               //alignContent: 'center',
             }}>
             <View >
               <KeyboardAvoidingView enabled>
-              <Text
+                <Text
                   style={{
                     color: 'rgba(219, 35, 36, 1.0)',
                     fontWeight: 'bold',
                     fontSize: 18,
                     padding: 20,
                   }}
-                 >
-                 Forgot Password
+                >
+                  Forgot Password
                 </Text>
                 <View style={styles.SectionStyle}>
-                    <TextInput
-                      mode="outlined"
-                      label="Enter your Phone number"
-                      placeholder="Enter your Phone number"
-                      theme={{ colors: { primary: 'red',underlineColor:'transparent'}}}
-                      maxLength={10}
-                      keyboardType = 'numeric'
+                  <TextInput
+                    mode="outlined"
+                    label="Enter your Phone number"
+                    placeholder="Enter your Phone number"
+                    onChangeText={(number) => setMobile(number)}
+                    theme={{ colors: { primary: 'red', underlineColor: 'transparent' } }}
+                    maxLength={10}
+                    keyboardType='numeric'
 
-                      //right={<TextInput.Affix text="/100" />}
-                    />
+                  //right={<TextInput.Affix text="/100" />}
+                  />
                 </View>
-                
+
                 <TouchableOpacity
                   style={styles.buttonStyle}
                   activeOpacity={0.5}
-                  // onPress={()=>handleSubmitPress()}
-                      onPress={() => navigation.navigate("Login")
-                    }
-                  >
+                  onPress={() => handleSubmitPress()}
+                // onPress={() => navigation.navigate("Login")
+                // }
+                >
                   <Text style={styles.buttonTextStyle}>SUBMIT</Text>
                 </TouchableOpacity>
 
@@ -141,20 +127,20 @@ const ForgotPassword = ({navigation}) => {
             </View>
           </ScrollView>
 
+        </View>
       </View>
-    </View>
-      </SafeAreaView>
-    
+    </SafeAreaView>
+
   );
 };
 export default ForgotPassword;
 
 const styles = StyleSheet.create({
-  
+
   mainBody: {
-   // justifyContent: 'center', //Centered horizontally
+    // justifyContent: 'center', //Centered horizontally
     alignItems: 'center', //Centered vertically
-    flex:2,
+    flex: 2,
     flexDirection: 'column',
     backgroundColor: '#fff',
     alignContent: 'space-between',
@@ -164,8 +150,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignContent: 'space-between'
   },
-  Logo:{
-    width: '50%', 
+  Logo: {
+    width: '50%',
     height: '30%',
     resizeMode: 'contain',
     justifyContent: "flex-start",
@@ -174,23 +160,24 @@ const styles = StyleSheet.create({
     top: 20,
     //backgroundColor: '#FFFFFF'           
   },
-  ContentView:{ width: '90%',
-   height: '35%', 
-   backgroundColor:'white',
-   marginTop:-40, 
-   borderRadius: 15,  
-   shadowColor: '#000000',
+  ContentView: {
+    width: '90%',
+    height: '35%',
+    backgroundColor: 'white',
+    marginTop: -40,
+    borderRadius: 15,
+    shadowColor: '#000000',
     shadowOffset: {
       width: 0,
       height: 3
     },
-  shadowRadius: 5,
-  shadowOpacity: 0.5
-},
+    shadowRadius: 5,
+    shadowOpacity: 0.5
+  },
   SectionStyle: {
     marginTop: 20,
-    marginLeft:20,
-    marginRight:20
+    marginLeft: 20,
+    marginRight: 20
   },
   buttonStyle: {
     backgroundColor: 'rgba(219, 35, 36, 1.0)',
@@ -231,11 +218,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 12,
   },
-  bottomContent:{
+  bottomContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     //backgroundColor:'red',
-    marginLeft:20,
-    marginRight:20
+    marginLeft: 20,
+    marginRight: 20
   }
 });
