@@ -266,7 +266,7 @@ const OnCallDropLoacality = ({ navigation, route }) => {
                                     iconStyle={styles.iconStyle}
                                     data={cityList}
                                     search
-                                    maxHeight={150}
+                                    maxHeight={350}
                                     labelField="label"
                                     valueField="value"
                                     placeholder="City*"
@@ -281,7 +281,7 @@ const OnCallDropLoacality = ({ navigation, route }) => {
                                     }}
                                 />
                             </View>
-                            <View style={{ width: '90%', alignSelf: 'center', marginTop: 20, borderWidth: 1, borderColor: 'black', padding: 5, borderRadius: 10 }}>
+                            <View style={{ width: '90%', alignSelf: 'center', marginTop: 20, borderWidth: 1, borderColor: 'black', padding: 5, paddingLeft:8, borderRadius: 5 }}>
                                 <Dropdown
                                     style={styles.dropdown}
                                     placeholderStyle={styles.placeholderStyle}
@@ -290,7 +290,7 @@ const OnCallDropLoacality = ({ navigation, route }) => {
                                     iconStyle={styles.iconStyle}
                                     data={localityList}
                                     search
-                                    maxHeight={250}
+                                    maxHeight={350}
                                     labelField="label"
                                     valueField="value"
                                     placeholder="Select new Locality*"

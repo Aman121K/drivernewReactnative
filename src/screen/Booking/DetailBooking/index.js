@@ -6,7 +6,6 @@ const BookingDetails=({navigation,route})=>{
     console.log("second page data",route.params.paramKey);
     return(
         <View>
-            {/* <Text style={{fontSize:20,fontWeight:'800',alignSelf:'center'}}>Booking Details Screen:</Text> */}
             <View style={{margin:'5%',marginTop:'10%'}}>
                 <ScrollView>
                     {route.params.paramKey.reporting_date?
@@ -167,7 +166,7 @@ const BookingDetails=({navigation,route})=>{
             <Text style={styles.cellText}>{route.params.paramKey.id}</Text>
           </Row>
           <Row style={styles.cell}>
-            <Text style={styles.cellText}>{route.params.paramKey.interview_date}</Text>
+            <Text style={styles.cellText}>{moment(route.params.paramKey.interview_date).format('DD-MM-YYYY')}</Text>
           </Row>
           <Row style={styles.cell}>
             <Text style={styles.cellText}>{route.params.paramKey.driver_type}</Text>
@@ -200,10 +199,10 @@ const BookingDetails=({navigation,route})=>{
             <Text style={styles.cellText}>{route.params.paramKey.address_details.landmark} {route.params.paramKey.address_details.city}</Text>
           </Row>
           <Row style={styles.cell}>
-            <Text style={styles.cellText}>{route.params.paramKey.interview_date}</Text>
+            <Text style={styles.cellText}>{moment(route.params.paramKey.interview_date).format('DD-MM-YYYY')}</Text>
           </Row>
           <Row style={styles.cell}>
-            <Text style={styles.cellText}>{route.params.paramKey.reporting_timeFrom}</Text>
+            <Text style={styles.cellText}>{route.params.paramKey.reporting_timeFrom} to {route.params.paramKey.reporting_timeTo}</Text>
           </Row>
           <Row style={styles.cell}>
             <Text style={styles.cellText}>{route.params.paramKey.age_from} to {route.params.paramKey.age_to}</Text>

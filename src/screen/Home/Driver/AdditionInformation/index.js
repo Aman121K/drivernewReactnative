@@ -386,6 +386,7 @@ const AdditionalInformation = ({navigation,route}) => {
     setLanguage('3')
     setLanguageMarathi('3');
     setLanguage1(!language1);
+    setLanguage3(3)
   }
   const selectHindi = () => {
     const abc=languagedemo;
@@ -415,6 +416,7 @@ const AdditionalInformation = ({navigation,route}) => {
     setlanguagedemo(abc);
     setLanguage('3')
     setLanguageHindi('3')
+    setLanguage3(3)
     setLanguage2(!language2);
   }
   const onSearch = (text) => {
@@ -496,7 +498,7 @@ const AdditionalInformation = ({navigation,route}) => {
                     keyboardType='number-pad'
                   />
                 </View>
-                <View >
+                <View style={{marginTop:20}}>
                   <TextInput
                     mode="outlined"
                     label="Age To"
@@ -511,7 +513,7 @@ const AdditionalInformation = ({navigation,route}) => {
                 </View>
               </View>
               <View style={styles.spacerStyle} />
-              <View>
+              <View style={{marginTop:20}}>
                 <Text style={{ fontSize: 15, fontWeight: '500',color:'black' }}>Eating Habits</Text>
               </View>
               <View style={{ flexDirection: 'row' }}>
@@ -525,7 +527,7 @@ const AdditionalInformation = ({navigation,route}) => {
                 </TouchableOpacity>
               </View>
               <View style={styles.spacerStyle} />
-              <View>
+              <View style={{marginTop:20}}>
                 <Text style={{ fontSize: 15, fontWeight: '500',color:'black' }}>Religion</Text>
               </View>
               <View style={{ flexDirection: 'row' }}>
@@ -548,26 +550,22 @@ const AdditionalInformation = ({navigation,route}) => {
               </View>
               <View style={styles.spacerStyle} />
               <View>
-                <Text style={{color:'black'}}>Language Known</Text>
+                <Text style={{color:'black',fontWeight:'700',marginTop:20}}>Language Known</Text>
               </View>
-              <View style={styles.spacerStyle} /> 
+              {/* <View style={styles.spacerStyle} />  */}
                <View style={{ flexDirection: 'row', }}>
                 <TouchableOpacity style={styles.radioButtonlanguage} onPress={() => selectMarathi()} >
-
                   <Ionicons name={language1 ? 'checkbox' : 'square-outline'} size={20} color={'red'} />
                   <Text style={{ marginLeft: 5,color:'black' }}>Marathi</Text>
                 </TouchableOpacity>
-
                 <TouchableOpacity style={styles.radioButtonlanguage} onPress={() => selectHindi()} >
                   <Ionicons name={language2 ? 'checkbox' : 'square-outline'} size={20} color={'red'} />
                   <Text style={{ marginLeft: 10,color:'black' }}>Hindi</Text>
                 </TouchableOpacity>
-
-                <TouchableOpacity style={styles.radioButtonlanguage} onPress={() => selectEnglish()} >
-                  <Ionicons name={language3 ? 'checkbox' : 'square-outline'} size={20} color={'red'} />
+                <TouchableOpacity style={styles.radioButtonlanguage} onPress={() => selectEnglish(3)} >
+                  <Ionicons name={language3 ===3 ? 'checkbox' : 'square-outline'} size={20} color={'red'} />
                   <Text style={{ marginLeft: 10 ,color:'black'}}>English</Text>
                 </TouchableOpacity>
-
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '90%', alignSelf: 'center', marginTop: '10%' }}>
                 <TouchableOpacity  onPress={()=>navigation.goBack()} style={{ backgroundColor: 'green', padding: '3%', borderRadius: 5, width: '25%' }}>

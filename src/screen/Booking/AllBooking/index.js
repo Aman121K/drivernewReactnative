@@ -2,20 +2,13 @@
 import React, { useState, createRef, useEffect } from 'react';
 import Loader from '../../../component/Loader';
 import {
-  ImageBackground,
   StyleSheet,
   SafeAreaView,
   View,
   Text,
   ScrollView,
-  Image,
-  Keyboard,
   TouchableOpacity,
-  KeyboardAvoidingView,
   Dimensions,
-  Alert,
-  RefreshControl,
-  ActivityIndicator
 } from 'react-native';
 import moment from 'moment';
 import { TextInput } from 'react-native-paper';
@@ -27,7 +20,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DataTable } from 'react-native-paper';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
-// import Loader from './Components/Loader';
 const BookingHistoryScreen = ({ navigation }) => {
   const isFocused = useIsFocused();
   const [userEmail, setUserEmail] = useState('');
@@ -38,41 +30,34 @@ const BookingHistoryScreen = ({ navigation }) => {
   const passwordInputRef = createRef();
   const [isLocal, setIsLocal] = useState('local');
   const [refresh, setRefresh] = useState(false);
-  const [loginuserData, setUserData] = useState(66366);
+  const [loginuserData, setUserData] = useState();
   const [onCall1, setOnCall] = useState([]);
   const [permanent, setPermanent] = useState([]);
   const [outStation, setOutStation] = useState([]);
   useEffect(() => {
     getToken()
-  }, [isFocused])
+  },[])
   const getToken = async () => {
     try {
       setLoading(true)
       let userData = await AsyncStorage.getItem("userData");
       console.log("!!!!! ----- User data  :-", userData);
+      getUserDetails()
       const data = JSON.parse(userData)
       console.log("!!!!! ----- User Obj: ", data.name, data.user_id);
       setUserData(data.user_id)
 
-      getUserDetails()
+      // getUserDetails()
 
     } catch (error) {
       console.log("!!!!! ----- Something went wrong, while getting user token", error);
     }
   }
-
-  const handleRefresh = () => {
-    // setRefresh(true);
-    setTimeout(() => {
-      getUserDetails();
-    }, 1000);
-  };
-
   const getUserDetails = async () => {
     console.log("vikass");
     setLoading(true)
     let response = await axios.post(
-      'http://driversuvidha.xyz/CRM/api/Booking/myBookingHistory',
+      'https://driversuvidha.in/CRM/api/Booking/myBookingHistory',
       {
         "customerid": loginuserData
       },
@@ -91,17 +76,13 @@ const BookingHistoryScreen = ({ navigation }) => {
   }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#eff3f4' }}>
-
-
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 5, backgroundColor: 'white' }}>
         <View>
-          <Text style={{ fontSize: 20, marginLeft: 10, fontWeight: '700' ,color:'black'}}>My Booking</Text>
+          <Text style={{ fontSize: 20, marginLeft: 10, fontWeight: '700' ,color:'black'}}>My Bookings</Text>
         </View>
         <View>
-
         </View>
       </View>
-
       <Loader loading={loading} />
       <View style={[styles.TopContent]}>
         {/* Out Station / One Way */}
@@ -131,7 +112,7 @@ const BookingHistoryScreen = ({ navigation }) => {
             //   <RefreshControl refreshing={refresh} onRefresh={handleRefresh} />
             // }
             style={{ marginBottom: '20%' }}>
-            {onCall1.map((item, index) => (
+            {onCall1?.reverse()?.map((item, index) => (
               <TouchableOpacity key={index} onPress={() => navigation.navigate('DetailBooking', {
                 paramKey: item,
               })}>
@@ -218,7 +199,7 @@ const BookingHistoryScreen = ({ navigation }) => {
                       <Text Text style={styles.textCell}>{item.id}</Text>
                     </Row>
                     <Row style={styles.cell}>
-                      <Text Text style={styles.textCell}>{item.interview_date}</Text>
+                      <Text Text style={styles.textCell}>{moment(item.interview_date).format('DD-MM-YYYY')}</Text>
                     </Row>
                     <Row style={styles.cell}>
                       <Text Text style={styles.textCell}>{item.car_detail}</Text>

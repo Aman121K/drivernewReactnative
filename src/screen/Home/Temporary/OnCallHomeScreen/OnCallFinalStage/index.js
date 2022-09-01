@@ -228,7 +228,7 @@ const OnCallFinalStage = ({ navigation, route }) => {
           </View>
           <View style={{ width: '90%', alignSelf: 'center' }}>
             <DropDown
-              label={"Select Driver"}
+              label={"Select Previous Booked Driver"}
               mode={"outlined"}
               visible={showDriverDropDown}
               showDropDown={() => setshowDriverDropDown(true)}
@@ -242,8 +242,8 @@ const OnCallFinalStage = ({ navigation, route }) => {
               theme={{ colors: { primary: '#99e8e4', underlineColor: 'yellow', accent: '#99e8e4' } }}
             />
           </View>
-          <View style={{ borderWidth: 1, borderColor: 'grren', padding: 15, marginTop: '6%', width: '90%', alignSelf: 'center', borderRadius: 10 }}>
-            <TextInput placeholder='Remarks' placeholderTextColor="black" style={{ color: 'black' }} onChangeText={(e) => setremarks(e)}
+          <View style={{ borderWidth: 1, padding: 5, marginTop: '6%', width: '90%', alignSelf: 'center', borderRadius:5, }}>
+            <TextInput placeholder='Remarks' multiline={true} placeholderTextColor="black" style={{ color: 'black' ,width:'90%'}} onChangeText={(e) => setremarks(e)}
             ></TextInput>
 
           </View>

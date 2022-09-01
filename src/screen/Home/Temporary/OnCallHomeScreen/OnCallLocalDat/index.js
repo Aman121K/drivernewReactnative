@@ -347,7 +347,7 @@ const OnCallLocalDat = ({ navigation }) => {
                             inputSearchStyle={styles.inputSearchStyle}
                             iconStyle={styles.iconStyle}
                             data={previousCarList}
-                            maxHeight={200}
+                            maxHeight={300}
                             search
                             labelField="label"
                             valueField="value"
@@ -379,7 +379,7 @@ const OnCallLocalDat = ({ navigation }) => {
                                     iconStyle={styles.iconStyle}
                                     data={carList}
                                     search
-                                    maxHeight={250}
+                                    maxHeight={350}
                                     labelField="label"
                                     valueField="value"
                                     placeholder="Select New  Car"

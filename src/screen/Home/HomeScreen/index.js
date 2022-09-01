@@ -24,7 +24,7 @@ const HomeScreen =  ({navigation}) =>{
 
           >
               <Image
-                  source={require('../../../../Image/p_driver.png')}
+                  source={require('../../../../Image/per-driver.png')}
                 style={styles.Logo}
               />
 

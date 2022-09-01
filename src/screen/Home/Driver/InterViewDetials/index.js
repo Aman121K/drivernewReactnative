@@ -290,7 +290,7 @@ const InterViewDetails = ({navigation,route}) => {
                 />
 
             </View>
-                <View >
+                <View  style={{marginTop:20}}>
                     <DropDown
                         label={"Time From"}
                         mode={"outlined"}
@@ -307,7 +307,7 @@ const InterViewDetails = ({navigation,route}) => {
 
                     />
                 </View>
-                <View >
+                <View style={{marginTop:20}} >
                     <DropDown
                         label={"Time To"}
                         mode={"outlined"}

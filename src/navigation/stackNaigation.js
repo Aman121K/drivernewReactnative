@@ -96,7 +96,7 @@ const StackNavigtaion = () => {
       <Stack.Screen
       name='OnCallFinalStage'
       component={OnCallFinalStage}
-      options={{title:'Tempoaray Booking'}}/>
+      options={{title:'Driver & Remark'}}/>
 
       <Stack.Screen
       name='OnCallLocalDat'
@@ -109,17 +109,17 @@ const StackNavigtaion = () => {
       <Stack.Screen
       name='OnCallPickUpAddress'
       component={OnCallPickUpAddress}
-      options={{title:'Pickup address'}}/>
+      options={{title:'Pickup Address'}}/>
       <Stack.Screen
       name='JobDetails'
       component={JobDetails}
-      options={{title:'Job details'}}/>
+      options={{title:'Job Details'}}/>
       <Stack.Screen
       name='Address'
       component={Address}
       options={{title:'Address'}}/>
       <Stack.Screen name='AdditionalInformation'
-      component={AdditionalInformation} options={{title:'Additional Informtion'}}/>
+      component={AdditionalInformation} options={{title:'Additional Information'}}/>
       <Stack.Screen name='InterviewDetails' component={InterViewDetails}
       options={{title:'Interview Details'}}/>
        <Stack.Screen name='OtpScreen' component={OtpScreen}

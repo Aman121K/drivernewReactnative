@@ -496,7 +496,7 @@ const OnCallPickUpAddress = ({ navigation, route }) => {
               maxHeight={250}
               labelField="label"
               valueField="value"
-              placeholder="Select Existing Address*"
+              placeholder="Select Existing Address"
               searchPlaceholder="Search..."
               value={reportingAddress}
               onChange={item => {
@@ -517,10 +517,10 @@ const OnCallPickUpAddress = ({ navigation, route }) => {
             />
           </View>
           <TouchableOpacity onPress={() => refRBSheetNewAddress.current.open()}>
-            <View style={{ borderWidth: 1, borderColor: 'grren', padding: 15, marginTop: '6%', width: '90%', alignSelf: 'center', borderRadius: 10 }}>
-              <Text style={{ color: 'black' }}>Select New Address</Text>
+            <View style={{ borderWidth: 1, padding: 15, marginTop: '6%', width: '90%', alignSelf: 'center', borderRadius: 5 }}>
+              <Text style={{ color: 'black',fontWeight:'600' }}>Add New Address</Text>
             </View>
-            <View style={{ padding: 15, marginTop: '6%', width: '90%', alignSelf: 'center', borderRadius: 10 }}>
+            <View style={{ padding: 15, marginTop: '6%', width: '90%',borderColor:'#D3D3D3', alignSelf: 'center', borderRadius: 10 }}>
               <Text style={{ color: 'black' }}>{address}{' '}{addressLevel}{' '}{locality}{' '}{landmark}{' '}{pincode}</Text>
             </View>
           </TouchableOpacity>
@@ -560,13 +560,13 @@ const OnCallPickUpAddress = ({ navigation, route }) => {
                   <View style={styles.spacerStyle} />
                   <Dropdown
                     style={styles.dropdown}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    inputSearchStyle={styles.inputSearchStyle}
+                    placeholderStyle={{color:'black'}}
+                    selectedTextStyle={{color:'black'}}
+                    inputSearchStyle={{color:'black'}}
                     iconStyle={styles.iconStyle}
                     data={cityList}
                     search
-                    maxHeight={150}
+                    maxHeight={350}
                     labelField="label"
                     valueField="value"
                     placeholder="City*"
@@ -583,13 +583,13 @@ const OnCallPickUpAddress = ({ navigation, route }) => {
                   <View style={styles.spacerStyle} />
                   <Dropdown
                     style={styles.dropdown}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    inputSearchStyle={styles.inputSearchStyle}
+                    placeholderStyle={{color:'black'}}
+                    selectedTextStyle={{color:'black'}}
+                    inputSearchStyle={{color:'black'}}
                     iconStyle={styles.iconStyle}
                     data={localityList}
                     search
-                    maxHeight={150}
+                    maxHeight={350}
                     labelField="label"
                     valueField="value"
                     placeholder="Locality*"

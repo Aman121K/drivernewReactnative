@@ -298,7 +298,7 @@ const JobDetails = ({ navigation }) => {
     const onSuccess = ({ data }) => {
       setLoading(false);
       // console.log('All DATA contractual.......////', data);
-      var carList = data.car_master.map(car => ({ value: car.id, label: car.car_name }));
+      var carList = data.car_master.map(car => ({ value: car.id, label: car.car_name + ' ' + '(' + car?.car_type + ')' }));
       // console.log('Car List by aman',carList);
       setCarList(carList)
 
@@ -332,7 +332,7 @@ const JobDetails = ({ navigation }) => {
           setshowlocalityDropDown(true)
         }
       }
-      var prevCarList = data.all_car.map(car => ({ value: car.car_id, label: car.car_name }));
+      var prevCarList = data.all_car.map(car => ({ value: car.id, label: car.car_name + ' ' + '(' + car?.car_type + ')' }));
       console.log("real data....", prevCarList);
 
       var newRd = { value: data.all_car.length + 1, label: 'Select New Car' };
@@ -506,21 +506,26 @@ const JobDetails = ({ navigation }) => {
         
           {isShowPreviousCarList == true ?
           <View style={{marginTop:10}}>
-                <DropDown
-                  label={"Choose a Car"}
-                  mode={"outlined"}
-                  visible={showAllCarDropDown}
-                  showDropDown={() => setshowAllCarDropDown(true)}
-                  onDismiss={() => setshowAllCarDropDown(false)}
-                  value={car}
-                  setValue={setCar}
-                  list={carList}
-                  dropDownStyle={{ marginTop: 0.1 }}
-                  dropDownItemTextStyle={{color:'black'}}
-                  activeColor={'red'}
-                  theme={{ colors: { primary: '#99e8e4',underlineColor:'yellow', accent:'#99e8e4'}}}
-                />
-                </View>
+                 <Dropdown
+                                    style={styles.dropdown}
+                                    placeholderStyle={{ color: 'black' }}
+                                    selectedTextStyle={{ color: 'black' }}
+                                    inputSearchStyle={styles.inputSearchStyle}
+                                    iconStyle={styles.iconStyle}
+                                    data={carList}
+                                    search
+                                    maxHeight={350}
+                                    labelField="label"
+                                    valueField="value"
+                                    placeholder="Select New  Car"
+                                    searchPlaceholder="Search..."
+                                    // value={cardetails.label}
+                                    onChange={item => {
+                                        setCar(item);
+                                        console.log("vikk", item);
+                                    }}
+                                />
+                            </View>
                  : null}
           <View style={{ flexDirection: 'row' }}>
 
